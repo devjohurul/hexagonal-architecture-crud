@@ -47,7 +47,7 @@ describe('ProductService', () => {
         price: -10,
       };
 
-      await expect(productService.createProduct(productData)).rejects.toThrow('Price must be a positive number');
+      await expect(productService.createProduct(productData)).rejects.toThrow('Price cannot be negative');
     });
   });
 
@@ -144,7 +144,7 @@ describe('ProductService', () => {
         price: -10,
       };
 
-      await expect(productService.updateProduct(createdProduct.id, updateData)).rejects.toThrow('Price must be a positive number');
+      await expect(productService.updateProduct(createdProduct.id, updateData)).rejects.toThrow('Price cannot be negative');
     });
   });
 

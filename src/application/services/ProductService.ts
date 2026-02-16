@@ -1,5 +1,6 @@
 import { Product, CreateProductDTO, UpdateProductDTO } from '../../domain/entities/Product';
 import { ProductRepository } from '../../domain/ports/ProductRepository';
+import { ValidationError } from '../../domain/errors/DomainErrors';
 
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
@@ -19,7 +20,7 @@ export class ProductService {
 
   async updateProduct(id: string, productData: UpdateProductDTO): Promise<Product | null> {
     if (productData.price !== undefined && productData.price < 0) {
-      throw new Error('Price must be a positive number');
+      throw new ValidationError('Price cannot be negative');
     }
     return this.productRepository.update(id, productData);
   }
@@ -30,10 +31,10 @@ export class ProductService {
 
   private validateProductData(productData: CreateProductDTO): void {
     if (!productData.name || productData.name.trim() === '') {
-      throw new Error('Product name is required');
+      throw new ValidationError('Product name is required');
     }
     if (productData.price < 0) {
-      throw new Error('Price must be a positive number');
+      throw new ValidationError('Price cannot be negative');
     }
   }
 }

@@ -1,5 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { ProductController } from '../adapters/web/ProductController';
+import { ValidationError } from '../../domain/errors/DomainErrors';
 
 export class ExpressApp {
   private app: Express;
@@ -28,7 +29,13 @@ export class ExpressApp {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       console.error('Error:', err.message);
-      res.status(400).json({ error: err.message });
+      
+      if (err instanceof ValidationError) {
+        res.status(422).json({ error: err.message });
+        return;
+      }
+      
+      res.status(500).json({ error: 'Internal server error' });
     });
   }
 
